@@ -58,3 +58,18 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# Its working perfectly with this function,
+# but it needed to avoid the instance.save()
+# @receiver(post_save, sender=Post)
+# def post_post_save(sender, instance, created, *args, **kwargs):
+#     if not instance.slug:
+#         instance.slug = slugify(instance.title)  # => this is ==> this-is
+#         instance.save()
+
+@receiver(pre_save, sender=Post)
+def post_pre_save(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.title)  # => this is ==> this-is
+        # instance.save()
