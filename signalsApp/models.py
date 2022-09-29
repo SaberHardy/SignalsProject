@@ -46,3 +46,15 @@ def user_post_save_receiver(sender, instance, created, *args, **kwargs):
 
 # receiver function, sender
 pre_save.connect(user_pre_save_receiver, sender=User)
+
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(blank=True, null=True)
+    liked = models.ManyToManyField(User, blank=True)
+    notify_users = models.BooleanField(default=True)
+    notify_users_timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
