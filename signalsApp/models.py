@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import (
     pre_save,  # does not have a created variable
-    post_save, pre_delete, post_delete,
+    post_save, pre_delete, post_delete, m2m_changed,
 )
 
 User = settings.AUTH_USER_MODEL
@@ -56,7 +56,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-
+"""
 # Its working perfectly with this function,
 # but it needed to avoid the instance.save()
 # @receiver(post_save, sender=Post)
@@ -88,7 +88,7 @@ def post_pre_delete(sender, instance, *args, **kwargs):
     # instance.slug = slugify(instance.title)
 
 
-pre_delete.connect(post_pre_delete, sender=User)
+# pre_delete.connect(post_pre_delete, sender=User)
 
 
 @receiver(post_delete, sender=Post)
@@ -97,4 +97,22 @@ def post_post_delete(sender, instance, *args, **kwargs):
 
 
 # receiver function, sender
-pre_save.connect(post_pre_delete, sender=User)
+# pre_save.connect(post_pre_delete, sender=User)
+
+
+@receiver(m2m_changed, sender=Post.liked.through)
+# You can use multi models with signals
+# @receiver(m2m_changed, sender=Post.liked.through)
+# @receiver(m2m_changed, sender=Post.liked.through)
+def post_post_liked_changed(sender, instance, action, *args, **kwargs):
+    print(f'{kwargs} = {args} has been removed!!')
+    if action == 'pre_add':
+        print('was added')
+        qs = kwargs.get('model').objects.filter(pk__in=kwargs.get('pk_set'))
+        print(qs)
+
+
+pre_save.connect(post_post_liked_changed, sender=User)
+"""
+
+

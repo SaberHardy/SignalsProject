@@ -1,0 +1,4 @@
+When to use Django Signals?
+You can use Django Signals when you want to run a specific code before or after the event on the model/database.
+For example when you update user then it should also update the profile model instance
+using the django post_save method.
