@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import (
     pre_save,  # does not have a created variable
-    post_save,
+    post_save, pre_delete, post_delete,
 )
 
 User = settings.AUTH_USER_MODEL
@@ -82,5 +82,19 @@ def post_pre_save(sender, instance, *args, **kwargs):
             print("Notified user")
 
 
+@receiver(pre_delete, sender=Post)
+def post_pre_delete(sender, instance, *args, **kwargs):
+    print(f"{instance.id} will be removed")
+    # instance.slug = slugify(instance.title)
+
+
+pre_delete.connect(post_pre_delete, sender=User)
+
+
+@receiver(post_delete, sender=Post)
+def post_post_delete(sender, instance, *args, **kwargs):
+    print(f"{instance.id} has been removed!!")
+
+
 # receiver function, sender
-pre_save.connect(post_pre_save, sender=User)
+pre_save.connect(post_pre_delete, sender=User)
