@@ -5,6 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Hello to my file</h1>
+<form action="." method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Type your text here....">
+    <input class="btn btn-success" type="submit">
+</form>
+
+{% if timestamp %}
+    {{ timestamp }}
+{% endif %}
 </body>
 </html>
